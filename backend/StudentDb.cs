@@ -1,6 +1,8 @@
-namespace Student.DB;
+using Microsoft.EntityFrameworkCore;
 
-public record Student // Represents a student entity
+namespace UniversityStudent.Models;
+
+public record aStudent // Represents a student entity
 {
     public int Id { get; set; }
     public string? firstName { get; set; }
@@ -11,32 +13,37 @@ public record Student // Represents a student entity
     public string? degree { get; set; }
 }
 
-public class StudentDb // Simulates a database for storing student records
+class StudentDB : DbContext
 {
-    private static List<Student> _students = new List<Student>
+    public StudentDB(DbContextOptions<StudentDB> options) : base(options) { }
+    public DbSet<aStudent> Students { get; set; } = null!; // Student records in the database
+}
+public class Students // Simulates a database of student records
+{
+    private static List<aStudent> _students = new List<aStudent>
     {
-        new Student { Id = 1, firstName = "John", lastName = "Doe", university = "University A",
+        new aStudent { Id = 1, firstName = "John", lastName = "Doe", university = "University A",
         email = "jDoe@gmail.com", age = 20, degree = "Computer Science" },
-        new Student { Id = 2, firstName = "Jane", lastName = "Smith", university = "University B",
+        new aStudent { Id = 2, firstName = "Jane", lastName = "Smith", university = "University B",
         email = "smithJane@hotmail.com", age = 22, degree = "Mathematics" },
-        new Student { Id = 3, firstName = "Alice", lastName = "Johnson", university = "University C",
+        new aStudent { Id = 3, firstName = "Alice", lastName = "Johnson", university = "University C",
         email = "allyJohnson@yahoo.com", age = 21, degree = "Business" }
     };
 
-    public static List<Student> GetStudents()
+    public static List<aStudent> GetStudents()
     {
         return _students;
     }
-    public static Student? GetStudentById(int id)
+    public static aStudent? GetStudentById(int id)
     {
         return _students.SingleOrDefault(s => s.Id == id);
     }
-    public static void AddStudent(Student student)
+    public static void AddStudent(aStudent student)
     {
         //student.Id = _students.Max(s => s.Id) + 1; increments id?
         _students.Add(student);
     }
-    public static Student UpdateStudent(Student update)
+    public static aStudent UpdateStudent(aStudent update)
     {
         _students = _students.Select(student =>
         {
