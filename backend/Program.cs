@@ -17,21 +17,54 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// Configures Swagger UI for API documentation
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger(); // Enables Swagger in development mode
     // Swagger JSON file location
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Student API v1"));
-} // Configures Swagger UI for API documentation
+} 
 
-// CRUD operations for Student entity
+app.MapGet("/", () => "Hello World!"); // Root endpoint for testing 
+
+// ## CRUD operations for Student entity ##
+// Get all students
 app.MapGet("/students", async (StudentDB db) => await db.Students.ToListAsync()); // Get all students from the database
 
+// Add a student
 app.MapPost("/students", async (StudentDB db, aStudent student) =>
 {
     await db.Students.AddAsync(student);
     await db.SaveChangesAsync();
     return Results.Created($"/students/{student.Id}", student); // Adds a new student to the database
+});
+
+// Get a student by ID
+app.MapGet("/students/{id}", async (StudentDB db, int id) => await db.Students.FindAsync(id));
+
+// Update a student
+app.MapPut("/students/{id}", async (StudentDB db, aStudent updateStudent, int id) =>
+{
+    var student = await db.Students.FindAsync(id);
+    if (student is null) return Results.NotFound(); // Return if student record does not exist
+    // Once the student's record is found, update:
+    student.firstName = updateStudent.firstName;
+    student.lastName = updateStudent.lastName;
+    student.university = updateStudent.university;
+    student.email = updateStudent.email;
+    student.age = updateStudent.age;
+    student.degree = updateStudent.degree;
+    await db.SaveChangesAsync();
+    return Results.NoContent();
+});
+
+app.MapDelete("/students/{id}", async (StudentDB db, int id) =>
+{
+    var student = await db.Students.FindAsync(id);
+    if (student is null) return Results.NotFound();
+    db.Students.Remove(student);
+    await db.SaveChangesAsync();
+    return Results.Ok();
 });
 
 //app.MapGet("/students", () => Students.GetStudents());
