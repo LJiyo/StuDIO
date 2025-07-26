@@ -1,12 +1,35 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using UniversityStudent.Models;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args); // builder object to configure services
-builder.Services.AddEndpointsApiExplorer(); // Adds support for API exploration
-builder.Services.AddDbContext<StudentDB>(options => options.UseInMemoryDatabase("items")); // To set up in-memory database for testing
+
+// Load environment variables from .env file
+DotNetEnv.Env.Load(".env");
+
+// Access the environment variable for database URI
+var connection = String.Empty;
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
+    connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+}
+else
+{
+    connection = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+}
+
+// Look for "Students" connection string, else, use the StudentDB
+//var connectionString = builder.Configuration.GetConnectionString(dbString) ?? "Data Source=StudentDB";
+
+//builder.Services.AddDbContext<StudentDB>(options => options.UseInMemoryDatabase("items")); // To set up in-memory database for testing
+
 // SQL Server database connection
-//builder.Services.AddDbContext<StudentDB>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))); // Configures DbContext with SQL Server
+builder.Services.AddDbContext<StudentDB>(options =>
+    options.UseSqlServer(connection));
+
+builder.Services.AddEndpointsApiExplorer(); // Adds support for API exploration
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo {
@@ -22,10 +45,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger(); // Enables Swagger in development mode
     // Swagger JSON file location
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Student API v1"));
+    app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Student API v1"));
 } 
 
 app.MapGet("/", () => "Hello World!"); // Root endpoint for testing 
+
+// =================================================================
 
 // ## CRUD operations for Student entity ##
 // Get all students
