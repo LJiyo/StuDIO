@@ -1,23 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using UniversityStudent.Models;
-using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args); // builder object to configure services
-
+// builder.Services.AddOpenApi(); // Removed: No such method, Swagger is configured below
 // Load environment variables from .env file
-DotNetEnv.Env.Load(".env");
+//DotNetEnv.Env.Load(".env");
 
 // Access the environment variable for database URI
 var connection = String.Empty;
 if (builder.Environment.IsDevelopment())
 {
     builder.Configuration.AddEnvironmentVariables().AddJsonFile("appsettings.Development.json");
-    connection = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+    connection = builder.Configuration.GetConnectionString("DEFAULT_CONNECTION");
 }
 else
 {
-    connection = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTIONSTRING");
+    connection = Environment.GetEnvironmentVariable("DEFAULT_CONNECTION");
 }
 
 // Look for "Students" connection string, else, use the StudentDB
@@ -45,7 +44,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger(); // Enables Swagger in development mode
     // Swagger JSON file location
-    app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Student API v1"));
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Student API v1");
+    });
 } 
 
 app.MapGet("/", () => "Hello World!"); // Root endpoint for testing 

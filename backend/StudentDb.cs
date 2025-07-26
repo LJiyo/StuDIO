@@ -40,7 +40,6 @@ public class Students // Simulates a database of student records
     }
     public static void AddStudent(aStudent student)
     {
-        //student.Id = _students.Max(s => s.Id) + 1; increments id?
         _students.Add(student);
     }
     public static aStudent UpdateStudent(aStudent update)
