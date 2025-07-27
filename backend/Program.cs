@@ -56,10 +56,10 @@ app.MapGet("/", () => "Hello World!"); // Root endpoint for testing
 
 // ## CRUD operations for Student entity ##
 // Get all students
-app.MapGet("/students", async (StudentDB db) => await db.Students.ToListAsync()); // Get all students from the database
+app.MapGet("/studentsList", async (StudentDB db) => await db.Students.ToListAsync()); // Get all students from the database
 
 // Add a student
-app.MapPost("/students", async (StudentDB db, aStudent student) =>
+app.MapPost("/sign-up", async (StudentDB db, studentUser student) =>
 {
     await db.Students.AddAsync(student);
     await db.SaveChangesAsync();
@@ -67,10 +67,10 @@ app.MapPost("/students", async (StudentDB db, aStudent student) =>
 });
 
 // Get a student by ID
-app.MapGet("/students/{id}", async (StudentDB db, int id) => await db.Students.FindAsync(id));
+app.MapGet("/studentsList/{id}", async (StudentDB db, int id) => await db.Students.FindAsync(id));
 
 // Update a student
-app.MapPut("/students/{id}", async (StudentDB db, aStudent updateStudent, int id) =>
+app.MapPut("/studentsList/{id}", async (StudentDB db, studentUser updateStudent, int id) =>
 {
     var student = await db.Students.FindAsync(id);
     if (student is null) return Results.NotFound(); // Return if student record does not exist
@@ -84,8 +84,8 @@ app.MapPut("/students/{id}", async (StudentDB db, aStudent updateStudent, int id
     await db.SaveChangesAsync();
     return Results.NoContent();
 });
-
-app.MapDelete("/students/{id}", async (StudentDB db, int id) =>
+// Remove a student from list
+app.MapDelete("/studentsList/{id}", async (StudentDB db, int id) =>
 {
     var student = await db.Students.FindAsync(id);
     if (student is null) return Results.NotFound();
@@ -94,11 +94,67 @@ app.MapDelete("/students/{id}", async (StudentDB db, int id) =>
     return Results.Ok();
 });
 
-//app.MapGet("/students", () => Students.GetStudents());
-//app.MapGet("/students/{id}", (int id) => Students.GetStudentById(id));
-//app.MapPost("/students", (Student student) => Students.AddStudent(student));
-//app.MapPut("/students", (Student student) => Students.UpdateStudent(student));
-//app.MapDelete("/students/{id}", (int id) => Students.DeleteStudent(id));
+// =================================================================
+// CRUD operations for login authentication
+// Login Authentication (simulated by storing the credentials in DB and comparing upon request)
+app.MapPost("login", async (StudentDB db, LoginRequest login) =>
+{
+    var student = await db.Students.FirstOrDefaultAsync(s => s.username == login.Username && s.password == login.Password);
+    
+return student is not null ? Results.Ok(student) : Results.Unauthorized();
+});
+
+app.MapGet("/check-username", async (StudentDB db, string username) =>
+{
+    var exists = await db.Students.AnyAsync(s => s.username == username);
+    return Results.Ok(!exists); // true if username is available
+});
+
+// =================================================================
+// CRUD operations for Student Groups
+// Delete the whole group
+app.MapDelete("/groups/{id}", async (StudentDB db, int id) =>
+{
+    var group = await db.Groups.FindAsync(id);
+    if (group is null) return Results.NotFound();
+    db.Groups.Remove(group);
+    await db.SaveChangesAsync();
+    return Results.Ok();
+});
+
+// Add student to group
+app.MapPost("/groups/{groupId}/add-student/{studentId}", async (StudentDB db, int groupId, int studentId) =>
+{
+    var group = await db.Groups.Include(g => g.Members).FirstOrDefaultAsync(g => g.Id == groupId);
+    var student = await db.Students.FindAsync(studentId);
+
+    if (group == null || student == null) return Results.NotFound(); // If group or student does not exist
+
+    // else, valid entry
+    group.Members.Add(student);
+    await db.SaveChangesAsync();
+    return Results.Ok();
+});
+
+// Remove student from group
+app.MapDelete("/groups/{groupId}/remove-student/{studentId}", async (StudentDB db, int groupId, int studentId) =>
+{
+    var group = await db.Groups.Include(g => g.Members).FirstOrDefaultAsync(g => g.Id == groupId);
+    var student = await db.Students.FindAsync(studentId);
+
+    if (group == null || student == null) return Results.NotFound();
+
+    group.Members.Remove(student);
+    await db.SaveChangesAsync();
+    return Results.Ok();
+});
+
+// Get all groups a student is in
+app.MapGet("/studentsList/{id}/groups", async (StudentDB db, int id) =>
+{
+    var student = await db.Students.Include(s => s.Groups).FirstOrDefaultAsync(s => s.Id == id);
+    return student is not null ? Results.Ok(student.Groups) : Results.NotFound();
+});
 
 
 app.Run();
