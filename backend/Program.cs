@@ -37,7 +37,19 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1" });
 }); // Adds Swagger for API documentation
 
+// Enable CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // frontend server
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
+app.UseCors("AllowFrontend");
 
 // Configures Swagger UI for API documentation
 if (app.Environment.IsDevelopment())
