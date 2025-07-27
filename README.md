@@ -16,7 +16,7 @@ StuDIO relates to the theme of "Networking" because it's designed to be a tool t
 # Advanced Features Chosen
 - Theme Switching
 - Storybook
-- Redux
+- React Router 
 
 # Links
 - Frontend and Backend depoloyments

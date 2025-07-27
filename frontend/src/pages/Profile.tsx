@@ -1,4 +1,14 @@
-// pages/Home.tsx
-export default function Home() {
-  return <h1>Welcome to your StuDIO Profile</h1>;
+import { Link, useParams } from "react-router-dom";
+// Routing config denoted by <Link>
+export default function Profile() {
+  const { username } = useParams();
+  return (
+    <div>
+      <h1>Welcome to your StuDIO Profile {username}!</h1>
+      <nav>
+        <Link to="/editprofile">Edit Profile</Link> | {" "}
+        <Link to="/dashboard">Return to Dashboard</Link>
+      </nav>
+    </div>
+  );
 }
