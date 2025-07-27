@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace UniversityStudent.Models;
@@ -97,8 +98,9 @@ public class Group
     public int Id { get; set; }
     public string? groupName { get; set; }
     public string? description { get; set; }
-
+    [JsonIgnore]
     public List<studentUser> Members { get; set; } = new();
+
     protected void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<studentUser>()
