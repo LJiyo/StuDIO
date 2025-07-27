@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Outlet } from "react-router-dom";
+//import { Outlet } from "react-router-dom";
 // Routing config denoted by <Link>
 // This is the true root page of the app. "root.tsx" is a palceholder.
 export default function Home() {
@@ -10,7 +10,6 @@ export default function Home() {
         <Link to="/signup">Sign Up</Link> |{" "}
         <Link to="/login">Log In</Link> |{" "}
       </nav>
-      <Outlet />
     </div>
   );
 }

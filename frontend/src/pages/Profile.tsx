@@ -6,8 +6,7 @@ export default function Profile() {
     <div>
       <h1>Welcome to your StuDIO Profile {username}!</h1>
       <nav>
-        <Link to="/editprofile">Edit Profile</Link> | {" "}
-        <Link to="/dashboard">Return to Dashboard</Link>
+        <Link to="/editprofile">Edit Profile</Link>
       </nav>
     </div>
   );

@@ -5,8 +5,7 @@ export default function GroupDetails() {
     <div>
       <h1>View your StuDIO Groups!</h1>
       <nav>
-        <Link to="/groups">Back to Groups</Link> | {" "}
-        <Link to="/dashboard">Back to Dashboard</Link>
+        <Link to="/groups">Back to Groups</Link>
       </nav>
     </div>
   )

@@ -8,6 +8,8 @@ import {
 } from "react-router-dom";
 //import App from "./App";
 
+// CSS import
+import './styles/main.css';
 
 // Importing route pages
 import ErrorPage from "./error-page";
@@ -20,6 +22,7 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Groups from "./pages/Groups";
 import GroupDetails from "./pages/GroupDetails";
+import MainLayout from './layouts/MainLayout';
 
 // ===================================================================
 
@@ -42,27 +45,32 @@ const router = createBrowserRouter([
     path:"/signupuserxpwd",
     element: <SignupUserxPwd />,
   },
-  { // Dashboard page
-    path: "/dashboard",
-    element: <Dashboard />,
+  { // Main layout 
+    path: "/",
+    element: <MainLayout />, 
+    children: [
+      { // Dashboard page
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      { // Profile page
+        path: "profile",
+        element: <Profile />,
+      },
+      { // Edit Profile page
+        path: "editprofile",
+        element: <EditProfile />,
+      },
+      { // Groups page
+        path: "groups",
+        element: <Groups />,
+      },
+      { // Group Details page
+        path: "groupdetails",
+        element: <GroupDetails />,
+      },
+    ]
   },
-  { // Profile page
-    path: "/profile",
-    element: <Profile />,
-  },
-  { // Edit Profile page
-    path: "/editprofile",
-    element: <EditProfile />,
-  },
-  { // Groups page
-    path: "/groups",
-    element: <Groups />,
-  },
-  { // Group Details page
-    path: "/groupdetails",
-    element: <GroupDetails />,
-  },
-
 ]);
 
 // ===================================================================
