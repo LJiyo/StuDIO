@@ -1,5 +1,9 @@
+# ** Update **
+- This project and README is incomplete and I was not able to submit it in time for the Phase 2 deadline. So this will be completed at my own pace as a personal project and I aim to make progress every two weeks in conjunction with my full time studies as a final-year university student.
+- I will aim to improve skills towards fullstack development with C#, React and Typescript as a result of this project.
+
 # StuDIO
-My WebApp project: Student x Portfolio, StuDIO, for Mirosoft Student Accelerator Phase 2, 2025
+Welcome to my WebApp project: Student x Portfolio (StuDIO) for Microsoft Student Accelerator Phase 2, 2025
 
 # Description 
 StuDIO is a blend of the words "Student" and "Portfolio". It emphasises the webapp's purpose in being a convenient and explicit way for students to showcase their skills and capabilities to other people, especially in settings such as class group projects, hackathons, and networking events. 
